@@ -1,12 +1,4 @@
 
-terraform {
-  required_providers {
-    zpa = {
-      source = "zscaler/zpa"
-      version = "~> 3.0.0"
-    }
-  }
-}
 provider "zpa" {
   zpa_client_id         =  var.zpa_client_id
   zpa_client_secret     =  var.zpa_client_secret
