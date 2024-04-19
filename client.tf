@@ -1,4 +1,6 @@
-#Create Network Security Group for Client
+################################################################################
+# Create NSG and Rules for Windows interfaces
+################################################################################
 resource "azurerm_network_security_group" "win_nsg" {
   name                = "win-nsg"
   location            = azurerm_resource_group.rg.location
@@ -38,15 +40,17 @@ resource "azurerm_network_security_group" "win_nsg" {
     destination_address_prefix = "*"
   }
 
-  tags = {"Name" = var.rg_name}
+  tags = {"Name" = var.azure_rg_name}
 
 }
 
-# Create network interface
+################################################################################
+# Create Windows Client1 Interface and associate NSG
+################################################################################
 resource "azurerm_network_interface" "source_client_nic" {
   name                = "win-source_nic"
   location            = var.azure_region
-  resource_group_name = var.rg_name
+  resource_group_name = var.azure_rg_name
 
   ip_configuration {
     name                          = "win-source_nic_configuration"
@@ -54,17 +58,19 @@ resource "azurerm_network_interface" "source_client_nic" {
     private_ip_address_allocation = "Dynamic"
   }
 
-  tags = {"Name" = var.rg_name}
+  tags = {"Name" = var.azure_rg_name}
 }
 
-# Create virtual machine for client
+################################################################################
+# Create Windows Client1 VM
+################################################################################
 resource "azurerm_windows_virtual_machine" "source_client" {
   name                  = "win-source_client"
   computer_name         = "source"
   admin_username        = "azureuser"
   admin_password        = random_password.password.result
   location              = var.azure_region
-  resource_group_name   = var.rg_name
+  resource_group_name   = var.azure_rg_name
   network_interface_ids = [azurerm_network_interface.source_client_nic.id]
   size                  = "Standard_DS1_v2"
 
@@ -74,13 +80,13 @@ resource "azurerm_windows_virtual_machine" "source_client" {
   }
 
   source_image_reference {
-    publisher = var.client_image_publisher
-    offer     = var.client_image_offer
-    sku       = var.client_image_sku
-    version   = var.client_image_version
+    publisher = var.azure_client_image_publisher
+    offer     = var.azure_client_image_offer
+    sku       = var.azure_client_image_sku
+    version   = var.azure_client_image_version
   }
   
-  tags = {"Name" = var.rg_name}
+  tags = {"Name" = var.azure_rg_name}
 
 }
 
@@ -90,11 +96,13 @@ resource "azurerm_network_interface_security_group_association" "source_client_n
 }
 
 
-# Create network interface for target client
+################################################################################
+# Create Windows Client2 Interface and associate NSG
+################################################################################
 resource "azurerm_network_interface" "target_client_nic" {
   name                = "win-target_nic"
   location            = var.azure_region
-  resource_group_name = var.rg_name
+  resource_group_name = var.azure_rg_name
 
   ip_configuration {
     name                          = "win-target_nic_configuration"
@@ -103,14 +111,16 @@ resource "azurerm_network_interface" "target_client_nic" {
   }
 }
 
-# Create virtual machine for target client
+################################################################################
+# Create Windows Client2 VM
+################################################################################
 resource "azurerm_windows_virtual_machine" "target_client" {
   name                  = "win-target_client"
   computer_name         = "target"
   admin_username        = "azureuser"
   admin_password        = random_password.password.result
   location              = var.azure_region
-  resource_group_name   = var.rg_name
+  resource_group_name   = var.azure_rg_name
   network_interface_ids = [azurerm_network_interface.target_client_nic.id]
   size                  = "Standard_DS1_v2"
 
@@ -120,13 +130,13 @@ resource "azurerm_windows_virtual_machine" "target_client" {
   }
 
   source_image_reference {
-    publisher = var.client_image_publisher
-    offer     = var.client_image_offer
-    sku       = var.client_image_sku
-    version   = var.client_image_version
+    publisher = var.azure_client_image_publisher
+    offer     = var.azure_client_image_offer
+    sku       = var.azure_client_image_sku
+    version   = var.azure_client_image_version
   }
 
-  tags = {"Name" = var.rg_name}
+  tags = {"Name" = var.azure_rg_name}
 
 }
 
@@ -134,8 +144,6 @@ resource "azurerm_network_interface_security_group_association" "target_client_n
   network_interface_id      = azurerm_network_interface.target_client_nic.id
   network_security_group_id = azurerm_network_security_group.win_nsg.id
 }
-
-
 
 resource "random_password" "password" {
   length      = 20

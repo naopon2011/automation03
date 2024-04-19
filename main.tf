@@ -13,14 +13,14 @@ terraform {
 
 provider "azurerm" {
   features {}
-  subscription_id = var.subscription_id
-  client_id     = var.client_id
-  client_secret = var.client_secret
-  tenant_id     = var.tenant_id
+  subscription_id = var.azure_subscription_id
+  client_id     = var.azure_client_id
+  client_secret = var.azure_client_secret
+  tenant_id     = var.azure_tenant_id
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = var.rg_name
+  name     = var.azure_rg_name
   location = var.azure_region
 }
 
@@ -34,8 +34,7 @@ resource "azurerm_virtual_network" "vnet" {
   name                = "vnet"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  address_space       = [var.vnet_cidr]
- # dns_servers         = ["10.0.0.4", "10.0.0.5"]
+  address_space       = [var.azure_vnet_cidr]
 }
 
 resource "azurerm_subnet" pub_subnet {
@@ -89,26 +88,5 @@ resource "azurerm_route_table" "private_route_table" {
 }
 
 resource "tls_private_key" "key" {
-  algorithm = var.tls_key_algorithm
+  algorithm = var.azure_tls_key_algorithm
 }
-
-# デフォルトルートをCCに設定
-#resource "azurerm_route" "public_route" {
-#  name         = "private_route"
-#  resource_group_name = azurerm_resource_group.rg.name
-#  route_table_name = azurerm_route_table.private_route_table
-#  address_prefix = "0.0.0.0/0"
-#  next_hop_type = "Virtual Applicance"
-#  next_hop_in_ip_address
-#}
-
-#ルーティングテーブルをサブネットに紐付け
-#resource "azurerm_subnet_route_table_association" "private1" {
-#  subnet_id = azurerm_virtual_network.vnet.subnet.pri_subnet1.ID
-#  route_table_id = azurerm_route_table.private_route_table.id
-#}
-
-#resource "azurerm_subnet_route_table_association" "private2" {
-#  subnet_id = azurerm_virtual_network.vnet.subnet.pri_subnet2.ID
-#  route_table_id = azurerm_route_table.private_route_table.id
-#}
