@@ -68,8 +68,8 @@ variable "azure_psevm_instance_type" {
   default     = "Standard_D4s_v3"
   validation {
     condition = (
-      var.psevm_instance_type == "Standard_D4s_v3" ||
-      var.psevm_instance_type == "Standard_F4s_v2"
+      var.azure_psevm_instance_type == "Standard_D4s_v3" ||
+      var.azure_psevm_instance_type == "Standard_F4s_v2"
     )
     error_message = "Input psevm_instance_type must be set to an approved vm size."
   }
@@ -146,8 +146,8 @@ variable "azure_acvm_instance_type" {
   default     = "Standard_D4s_v3"
   validation {
     condition = (
-      var.acvm_instance_type == "Standard_D4s_v3" ||
-      var.acvm_instance_type == "Standard_F4s_v2"
+      var.azure_acvm_instance_type == "Standard_D4s_v3" ||
+      var.azure_acvm_instance_type == "Standard_F4s_v2"
     )
     error_message = "Input acvm_instance_type must be set to an approved vm size."
   }
