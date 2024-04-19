@@ -1,4 +1,3 @@
-
 provider "zpa" {
   zpa_client_id         =  var.zpa_client_id
   zpa_client_secret     =  var.zpa_client_secret
@@ -18,7 +17,7 @@ resource "zpa_application_segment" "test_client" {
   domain_names     = ["source.internal.cloudapp.net"]
   segment_group_id = zpa_segment_group.test_client_app_group.id
   server_groups {
-    id = [zpa_server_group.win_servers.id]
+    id = [zpa_server_group.azure.id]
   }
 }
 
@@ -54,7 +53,7 @@ resource "zpa_policy_access_rule" "access_policy_for_test_client" {
       name =  "Example"
       object_type = "APP_GROUP"
       lhs = "id"
-      rhs = zpa_segment_group.win_test_client_app_group.id
+      rhs = zpa_segment_group.test_client_app_group.id
     }
   }
 }
@@ -72,7 +71,7 @@ resource "zpa_application_segment" "target" {
   domain_names     = ["target.internal.cloudapp.net"]
   segment_group_id = zpa_segment_group.target_app_group.id
   server_groups {
-    id = [zpa_server_group.win_servers.id]
+    id = [zpa_server_group.azure.id]
   }
 }
 
@@ -97,7 +96,7 @@ resource "zpa_policy_access_rule" "access_policy_for_taget_app" {
       name =  "Example"
       object_type = "APP_GROUP"
       lhs = "id"
-      rhs = zpa_segment_group.win_test_client_app_group.id
+      rhs = zpa_segment_group.target_app_group.id
     }
   }
 }
